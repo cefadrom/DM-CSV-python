@@ -652,3 +652,12 @@ del cities_country_codes, countries_in_cities_table
 
 # ---------- Question 25 ----------
 print_state('Question 25', 'Pays pour lesquels aucune langue n\'est répertoriée')
+
+lang_country_codes = get_unique_values_on_column(table_lang, 0)  # Codes des pays dans la base "villes.csv"
+
+# Pays qui n'ont pas leur code dans la variable lang_country_codes
+countries_not_in_lang_table = [row for row in table_country if row[0] not in lang_country_codes]
+
+print('{} pays n\'ont aucune langue répertoriée dans la base langues.csv'.format(len(countries_not_in_lang_table)))
+
+del lang_country_codes, countries_not_in_lang_table
