@@ -217,7 +217,7 @@ def filter_table_by_comparator(table, column_index, comparator, number):
     :param list[tuple] table: la table source
     :param int column_index: l'index de la colone à filtrer
     :param str comparator: le signe qui permet de comparer (>, <=, == et autres)
-    :param int number: le nombre auquel les valeurs sont comparées
+    :param int | float number: le nombre auquel les valeurs sont comparées
     :return list[tuple]: la table filtrée
     """
     return [row for row in table if row[column_index] != 'NULL' and eval(row[column_index] + comparator + str(number))]
@@ -315,8 +315,6 @@ display_table(
     ),
     0, 10
 )
-
-del french_official_lang_countries
 
 # ---------- Question 10 ----------
 print_state('Question 10', 'Pays d\'Amérique du Sud de plus de 10m habitants ayant un régime républicain')
@@ -477,7 +475,7 @@ def order_table_by_column(table, column_index, reverse=False):
     :param boolean reverse: true si on doit trier la table dans le sens inverse
     :return list[tuple]: la table triée
     """
-    return sorted(table, key=lambda x: x[column_index], reverse=reverse)
+    return sorted(table, key=lambda value: value[column_index], reverse=reverse)
 
 
 europe_capitales_ids = get_unique_values_on_column(
@@ -665,30 +663,30 @@ del lang_country_codes, countries_not_in_lang_table
 # ---------- Question 26 ----------
 print_state('Question 26', 'Pays pour lesquels la somme du nombre d\'habitants de ses villes est supérieur à 10m')
 
-filtered_countries_codes = list()
+filtered_28_countries_codes = list()
 for row in table_country:
     country_code = row[0]
     cities_with_country_code = filter_table_by_list(table_city, 2, [country_code])
     if len(cities_with_country_code) > 0:
         pop_sum = summarize_column(cities_with_country_code, 4)
         if pop_sum['sum'] > 10_000_000:
-            filtered_countries_codes.append(country_code)
+            filtered_28_countries_codes.append(country_code)
 
 display_table(
     filter_table_by_list(
         table_country,
         0,
-        filtered_countries_codes
+        filtered_28_countries_codes
     ),
     0, 10
 )
 
-if 'FRA' in filtered_countries_codes:
+if 'FRA' in filtered_28_countries_codes:
     print('La france est dans le liste')
 else:
     print('La france n\'est pas dans la liste')
 
-del filtered_countries_codes
+del filtered_28_countries_codes
 
 # ---------- Question 27 ----------
 print_state('Question 27', 'Le pays asiatique ayant l\'espérance de vie la plus courte')
@@ -719,3 +717,61 @@ del asia_countries, shortest_life_asia
 
 # ---------- Question 28 ----------
 print_state('Question 28', 'La question abusée')
+
+sa_life_expectancy_sum = summarize_column(
+    filter_table_by_regex(table_country, 3, 'South America'),
+    7
+)
+
+sa_life_expectancy = sa_life_expectancy_sum['sum'] / sa_life_expectancy_sum['count']
+
+# On récupère les codes des pays avec le nombre de langues parlées
+lang_count_by_country_codes = dict()
+for row in table_lang:
+    x = lang_count_by_country_codes.get(row[0], 0) + 1
+    lang_count_by_country_codes[row[0]] = x
+
+# Si le nombre de langues parlées est supérieur à 3, on ajoute le code du pays à la variable more_3_langs_country_codes
+more_3_langs_country_codes = list()
+for key in lang_count_by_country_codes:
+    if lang_count_by_country_codes[key] >= 3:
+        more_3_langs_country_codes.append(key)
+
+more_3_langs_countries = filter_table_by_list(  # On enlève les pays qui parlent moins de 3 langues
+    table_country,
+    0,
+    more_3_langs_country_codes
+)
+
+filtered_28_countries = filter_table_by_list(  # On retire les pays qui n'ont pas le français comme langue officielle
+    more_3_langs_countries,
+    0,
+    get_unique_values_on_column(  # On reprend les codes des pays qui ont le français comme langue officielle
+        french_official_lang_countries, 0
+    )
+)
+
+# On retire les pays qui ont une espérance de vie inférieure à celle des pays d'Amérique du Sud
+filtered_28_countries = filter_table_by_comparator(
+    filtered_28_countries,
+    7, '>', sa_life_expectancy
+)
+
+# On récupère les codes des pays
+filtered_28_countries_codes = get_unique_values_on_column(
+    filtered_28_countries,
+    0
+)
+
+# On filtre les villes en ne gardant que celles qui ont un code de pays dans la variable filtered_28_countries_codes
+filtered_28_cities = filter_table_by_list(
+    table_city,
+    2,
+    filtered_28_countries_codes
+)
+
+print('Il y a {} villes qui remplissent les conditions de la question 28'
+      .format(len(filtered_28_cities)))
+
+# TODO : faire des optimisations pour accélérer la vitesse du programme
+#  - fonctions visées : filter_table_by_list et filter_table_by_comparator
