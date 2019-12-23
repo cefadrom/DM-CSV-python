@@ -546,7 +546,7 @@ portugese_speaking_country_codes = get_unique_values_on_column(  # On récupère
     0
 )
 
-more_49_cities_country_code = list()
+portugese_and_more_49_cities_country_code = list()
 
 for country_code in portugese_speaking_country_codes:
     # On ne garde que les pays qui parlent espagnol et ou il y a plus de 49 états
@@ -557,13 +557,30 @@ for country_code in portugese_speaking_country_codes:
                 country_code
             )
     ) > 49:
-        more_49_cities_country_code.append(country_code)
+        portugese_and_more_49_cities_country_code.append(country_code)
 
 display_table(
     filter_table_by_list(  # Filtre : on ne garde que les pays ou l'on parle portugais et ou il y a plus de 49 états
         na_countries_independance_1912,
         0,
-        more_49_cities_country_code
+        portugese_and_more_49_cities_country_code
     ),
+    0, 10
+)
+
+del na_countries_independance_1912, portugese_speaking_country_codes, portugese_and_more_49_cities_country_code
+
+# ---------- Question 21 ----------
+print_state('Question 21', 'Pays ou toutes le villes ont plus de 100k habitants')
+
+more_100k_country_codes = list()
+for country_code in get_unique_values_on_column(table_city, 2):
+    if min(
+        [int(row[4]) for row in filter_table_by_list(table_city, 2, [country_code])]
+    ) > 100_000:
+        more_100k_country_codes.append(country_code)
+
+display_table(
+    filter_table_by_list(table_country, 0, more_100k_country_codes),
     0, 10
 )
