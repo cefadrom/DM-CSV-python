@@ -716,3 +716,6 @@ print('Le pays d\'Asie avec l\'espérance de vie la plus courte : {} ({} ans)'
       .format(shortest_life_asia[1], shortest_life_asia[7]))
 
 del asia_countries, shortest_life_asia
+
+# ---------- Question 28 ----------
+print_state('Question 28', 'La question abusée')

@@ -1,0 +1,15 @@
+La question abusée
+
+Quel est le nombre de villes
+répertoriées dans les pays qui parlent au moins trois langues,
+dont le français est langue officielle
+et dont l’espérance de vie des habitants est supérieure
+à l’espérance de vie de tous les habitants d’Amérique du Sud ?
+
+longueur :
+    - villes :
+        - qui parlent au moins 3 langues
+        - français est la langue officielle
+        - espérence de vie supérieure à :
+            - espérance de vie de :
+                - tous les habitants d'Amérique du Sud
