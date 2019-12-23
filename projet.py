@@ -661,3 +661,32 @@ countries_not_in_lang_table = [row for row in table_country if row[0] not in lan
 print('{} pays n\'ont aucune langue répertoriée dans la base langues.csv'.format(len(countries_not_in_lang_table)))
 
 del lang_country_codes, countries_not_in_lang_table
+
+# ---------- Question 26 ----------
+print_state('Question 26', 'Pays pour lesquels la somme du nombre d\'habitants de ses villes est supérieur à 10m')
+
+filtered_countries_codes = list()
+for row in table_country:
+    country_code = row[0]
+    cities_with_country_code = filter_table_by_list(table_city, 2, [country_code])
+    if len(cities_with_country_code) > 0:
+        pop_sum = summarize_column(cities_with_country_code, 4)
+        if pop_sum['sum'] > 10_000_000:
+            filtered_countries_codes.append(country_code)
+
+display_table(
+    filter_table_by_list(
+        table_country,
+        0,
+        filtered_countries_codes
+    ),
+    0, 10
+)
+
+if 'FRA' in filtered_countries_codes:
+    print('La france est dans le liste')
+else:
+    print('La france n\'est pas dans la liste')
+
+# ---------- Question 27 ----------
+print_state('Question 27', 'Le pays asiatique ayant l\'espérance de vie la plus courte')
