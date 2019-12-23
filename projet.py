@@ -190,7 +190,7 @@ def filter_table_by_list(table, column_index, whitelist):
     Permet de filtrer une table en regardant si les valeurs de la colone spécifiée sont dans une liste blanche
     :param list[tuple] table: la table source
     :param int column_index: l'index de la colone à filtrer
-    :param tuple[str] | list[str] whitelist: la liste blanche
+    :param tuple[str] | list[str] | set[str] whitelist: la liste blanche
     :return list[tuple]: la table filtrée
     """
     return [row for row in table if row[column_index] in whitelist]
@@ -611,3 +611,29 @@ display_table(
     filter_table_by_list(table_country, 0, more_nepal_country_codes),
     0, 10
 )
+
+del nepal_max_pop, more_nepal_country_codes
+
+# ---------- Question 23 ----------
+print_state('Question 23', 'Pays ou l\'on parle français mais pas anglais')
+
+french_speaking_country_codes = set(get_unique_values_on_column(
+    filter_table_by_regex(table_lang, 1, 'French'),
+    0
+))
+
+english_speaking_country_codes = set(get_unique_values_on_column(
+    filter_table_by_regex(table_lang, 1, 'english'),
+    0
+))
+
+display_table(
+    filter_table_by_list(
+        table_country,
+        0,
+        french_speaking_country_codes - english_speaking_country_codes
+    ),
+    0, 10
+)
+
+del french_speaking_country_codes, english_speaking_country_codes
