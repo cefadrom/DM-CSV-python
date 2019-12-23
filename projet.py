@@ -688,5 +688,7 @@ if 'FRA' in filtered_countries_codes:
 else:
     print('La france n\'est pas dans la liste')
 
+del filtered_countries_codes
+
 # ---------- Question 27 ----------
 print_state('Question 27', 'Le pays asiatique ayant l\'espérance de vie la plus courte')
