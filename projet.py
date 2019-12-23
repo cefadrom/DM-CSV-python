@@ -75,7 +75,7 @@ def display_table(table, start=0, end=None):
         print_list.append('+' + '+'.join(['-' * (length + 2) for length in row_max_length]) + '+')
         print_list.append(
             '| ' + ' | '.join(
-                [cell + ' ' * (row_max_length[index] - len(cell)) for index, cell in enumerate(row)]
+                [str(cell) + ' ' * (row_max_length[index] - len(str(cell))) for index, cell in enumerate(row)]
             ) + ' |')
 
     print_list.append('+' + '+'.join(['-' * (length + 2) for length in row_max_length]) + '+')
@@ -130,7 +130,7 @@ def get_rows_max_length(table):
     new_table = change_table_direction(table)
     row_max_length = [0 for i in table[0]]
     for index, row in enumerate(new_table):
-        row_max_length[index] = max([len(cell) for cell in row])
+        row_max_length[index] = max([len(str(cell)) for cell in row])
     return row_max_length
 
 
@@ -463,7 +463,7 @@ asia_cities_pop = summarize_column(asia_cities, 4)
 print('En Asie, la population moyenne dans les {} villes est de {} habitants'
       .format(asia_cities_pop['count'], round(asia_cities_pop['sum'] / asia_cities_pop['count'], 1)))
 
-del asia_cities, asia_country_codes, asia_cities_pop, asia_countries
+del asia_cities, asia_country_codes, asia_cities_pop
 
 # ---------- Question 18 ----------
 print_state('Question 18', 'Capitales d\'Europe ordonnées par ordre alphabétique')
@@ -692,3 +692,27 @@ del filtered_countries_codes
 
 # ---------- Question 27 ----------
 print_state('Question 27', 'Le pays asiatique ayant l\'espérance de vie la plus courte')
+
+
+def convert_column_to_float(table, colomn_index):
+    """
+    Convertis une colone de strings dans une table en une colone de floats
+    :param list[tuple] table: la table source
+    :param int colomn_index:
+    :return list[tuple]: la table avec la colone convertie
+    """
+    return [
+        tuple(
+            list(row[:colomn_index]) + [float(row[colomn_index])] + list(row[colomn_index + 1:])
+        )
+        for row in table
+    ]
+
+
+asia_countries = convert_column_to_float(asia_countries, 7)
+shortest_life_asia = order_table_by_column(asia_countries, 7)[0]
+
+print('Le pays d\'Asie avec l\'espérance de vie la plus courte : {} ({} ans)'
+      .format(shortest_life_asia[1], shortest_life_asia[7]))
+
+del asia_countries, shortest_life_asia
