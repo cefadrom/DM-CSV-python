@@ -220,7 +220,7 @@ def filter_table_by_comparator(table, column_index, comparator, number):
     :param int number: le nombre auquel les valeurs sont comparées
     :return list[tuple]: la table filtrée
     """
-    return [row for row in table if eval(row[column_index] + comparator + str(number))]
+    return [row for row in table if row[column_index] != 'NULL' and eval(row[column_index] + comparator + str(number))]
 
 
 display_table(
@@ -535,3 +535,35 @@ del africa_capitales_ids, africa_big_population_countries_codes
 # ---------- Question 20 ----------
 print_state('Question 20',
             'Pays d\'Amérique du Nord avec indépendance avant 1912, on parle Portugais et ou il y a plus de 49 villes')
+
+na_countries_independance_1912 = filter_table_by_comparator(  # Filtre : indépendance avant 1912
+    filter_table_by_regex(table_country, 2, 'North America'),  # Filtre : pays d'Amérique du Nord
+    5, '<', 1912
+)
+
+portugese_speaking_country_codes = get_unique_values_on_column(  # On récupère les codes des pays
+    filter_table_by_regex(table_lang, 1, 'Portuguese'),  # Filtre : pays ou l'on parle portugais
+    0
+)
+
+more_49_cities_country_code = list()
+
+for country_code in portugese_speaking_country_codes:
+    # On ne garde que les pays qui parlent espagnol et ou il y a plus de 49 états
+    if len(
+            filter_table_by_list(
+                table_city,
+                2,
+                country_code
+            )
+    ) > 49:
+        more_49_cities_country_code.append(country_code)
+
+display_table(
+    filter_table_by_list(  # Filtre : on ne garde que les pays ou l'on parle portugais et ou il y a plus de 49 états
+        na_countries_independance_1912,
+        0,
+        more_49_cities_country_code
+    ),
+    0, 10
+)
