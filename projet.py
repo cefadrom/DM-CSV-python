@@ -574,9 +574,10 @@ del na_countries_independance_1912, portugese_speaking_country_codes, portugese_
 print_state('Question 21', 'Pays ou toutes le villes ont plus de 100k habitants')
 
 more_100k_country_codes = list()
-for country_code in get_unique_values_on_column(table_city, 2):
-    if min(
-        [int(row[4]) for row in filter_table_by_list(table_city, 2, [country_code])]
+for country_code in get_unique_values_on_column(table_city, 2):  # Pour chaque code de ville différent
+    if min(  # On regarde la plus petite valeur
+            # On récupère le nombre d'habitant de chaque ville d'un code de pays
+            [int(row[4]) for row in filter_table_by_list(table_city, 2, [country_code])]
     ) > 100_000:
         more_100k_country_codes.append(country_code)
 
@@ -584,3 +585,6 @@ display_table(
     filter_table_by_list(table_country, 0, more_100k_country_codes),
     0, 10
 )
+
+# ---------- Question 22 ----------
+print_state('Question 22', 'Pays dont toutes les villes ont plus d\'habitants que le ville la plus peuplée du Népal')
