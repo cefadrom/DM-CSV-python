@@ -586,5 +586,28 @@ display_table(
     0, 10
 )
 
+del more_100k_country_codes
+
 # ---------- Question 22 ----------
 print_state('Question 22', 'Pays dont toutes les villes ont plus d\'habitants que le ville la plus peuplée du Népal')
+
+nepal_max_pop = max(  # Population de la plus grande ville au nepal
+    [int(value) for value in  # Convertir chaque str en int
+     get_unique_values_on_column(  # On recupère le nombre d'habitants
+         filter_table_by_list(table_city, 2, ['NPL']),  # On récupère les villes du népal
+         4
+     )]
+)
+
+more_nepal_country_codes = list()
+for country_code in get_unique_values_on_column(table_city, 2):  # Pour chaque code de ville différent
+    if min(  # On regarde la plus petite valeur
+            # On récupère le nombre d'habitant de chaque ville d'un code de pays
+            [int(row[4]) for row in filter_table_by_list(table_city, 2, [country_code])]
+    ) > nepal_max_pop:
+        more_nepal_country_codes.append(country_code)
+
+display_table(
+    filter_table_by_list(table_country, 0, more_nepal_country_codes),
+    0, 10
+)
