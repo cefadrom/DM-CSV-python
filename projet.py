@@ -637,3 +637,18 @@ display_table(
 )
 
 del french_speaking_country_codes, english_speaking_country_codes
+
+# ---------- Question 24 ----------
+print_state('Question 24', 'Pays pour lequels au moins une ville est dans la base')
+
+cities_country_codes = get_unique_values_on_column(table_city, 2)  # Codes des pays dans la base "villes.csv"
+
+# Pays qui ont leur code dans la variable cities_country_codes
+countries_in_cities_table = [row for row in table_country if row[0] in cities_country_codes]
+
+print('{} pays ont au moins une ville dans la base villes.csv'.format(len(countries_in_cities_table)))
+
+del cities_country_codes, countries_in_cities_table
+
+# ---------- Question 25 ----------
+print_state('Question 25', 'Pays pour lesquels aucune langue n\'est répertoriée')
