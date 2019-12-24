@@ -348,14 +348,12 @@ del africa_french_lang_official_codes
 # ---------- Question 10 ----------
 print_state('Question 10', 'Pays d\'Amérique du Sud de plus de 10m habitants ayant un régime républicain')
 
-# TODO : Filtrer toute les formes de république
-
 display_table(
-    filter_table_by_value(  # Filtre : régime républicain
+    filter_table_by_regex(  # Filtre : régime républicain
         filter_table_by_comparator(  # Filtre : plus de 10m d'habitants
             filter_table_by_value(table_country, 2, 'South America'),  # Filtre : Amérique du Sud
             6, '>', 10_000_000
-        ), 11, 'Republic'),
+        ), 11, '.*Republic.*'),
     0, 10
 )
 
