@@ -176,8 +176,20 @@ display_table(
 # ---------- Question 2 ----------
 print_state('Question 2', 'Les pays d\'Amérique du Sud')
 
+
+def filter_table_by_value(table, column_index, value):
+    """
+    Permet de filter une table en regardant si les valeurs de la colone spécifiée respectent l'expression régulière
+    :param list[tuple] table: la table source
+    :param int column_index: l'index de la colone à filtrer
+    :param str value: la valeur qui sera comparée
+    :return list[tuple]: la table filtrée
+    """
+    return [row for row in table if value == row[column_index]]
+
+
 display_table(
-    filter_table_by_regex(table_country, 2, '^south america$'),
+    filter_table_by_regex(table_country, 2, 'South America'),
     0, 10
 )
 
@@ -196,7 +208,7 @@ def filter_table_by_list(table, column_index, whitelist):
     return [row for row in table if row[column_index] in whitelist]
 
 
-europe_country_codes = [row[0] for row in filter_table_by_regex(table_country, 2, 'europe')]
+europe_country_codes = [row[0] for row in filter_table_by_value(table_country, 2, 'Europe')]
 europe_cities = filter_table_by_list(table_city, 2, europe_country_codes)
 
 del europe_country_codes
@@ -278,7 +290,7 @@ def filter_duplicated_rows(table, column_index):
     return new_table
 
 
-french_lang_countries = filter_table_by_regex(table_lang, 1, '^french$')
+french_lang_countries = filter_table_by_value(table_lang, 1, 'French')
 
 display_table(
     filter_table_by_list(
@@ -297,10 +309,10 @@ french_official_lang_countries = filter_table_by_list(
     table_country,
     0,
     get_unique_values_on_column(
-        filter_table_by_regex(
+        filter_table_by_value(
             french_lang_countries,
             2,
-            '^T$'
+            'T'
         ), 0
     )
 )
@@ -312,11 +324,13 @@ display_table(french_official_lang_countries, 0, 10)
 # ---------- Question 9 ----------
 print_state('Question 9', 'Villes d\'Afrique de moins de 100k habitants ayant pour langue officielle le français')
 
+# TODO : Villes d'Afrique, pas les pays
+
 display_table(
-    filter_table_by_regex(
+    filter_table_by_value(
         filter_table_by_comparator(french_official_lang_countries, 6, '<', 100_000),
         2,
-        'africa'
+        'Africa'
     ),
     0, 10
 )
@@ -324,12 +338,14 @@ display_table(
 # ---------- Question 10 ----------
 print_state('Question 10', 'Pays d\'Amérique du Sud de plus de 10m habitants ayant un régime républicain')
 
+# TODO : Filtrer toute les formes de république
+
 display_table(
-    filter_table_by_regex(  # Filtre : régime républicain
+    filter_table_by_value(  # Filtre : régime républicain
         filter_table_by_comparator(  # Filtre : plus de 10m d'habitants
-            filter_table_by_regex(table_country, 2, 'South america'),  # Filtre : Amérique du Sud
+            filter_table_by_value(table_country, 2, 'South America'),  # Filtre : Amérique du Sud
             6, '>', 10_000_000
-        ), 11, '^republic$'),
+        ), 11, 'Republic'),
     0, 10
 )
 
@@ -337,15 +353,15 @@ display_table(
 print_state('Question 11', 'Villes Nord-Américaines de plus de 100k habitants ou l\'on parle espagnol')
 
 spanish_country_codes = get_unique_values_on_column(
-    filter_table_by_regex(
+    filter_table_by_value(
         table_lang,
         1,
-        'spanish'
+        'Spanish'
     ), 0
 )
 
 north_american_country_codes = get_unique_values_on_column(
-    filter_table_by_regex(
+    filter_table_by_value(
         table_country,
         2,
         'North America'
@@ -387,7 +403,7 @@ def summarize_column(table, column_index):
     return {'sum': total, 'count': matches}
 
 
-europe_countries = filter_table_by_regex(table_country, 2, 'Europe')
+europe_countries = filter_table_by_value(table_country, 2, 'Europe')
 
 print('L\'Europe a une surface de {} km².'.format(summarize_column(europe_countries, 4)['sum']))
 
@@ -396,7 +412,7 @@ print('L\'Europe a une surface de {} km².'.format(summarize_column(europe_count
 # ---------- Question 13 ----------
 print_state('Question 13', 'Surface de la polynésie')
 
-polynesia_countries = filter_table_by_regex(table_country, 3, 'Polynesia')
+polynesia_countries = filter_table_by_value(table_country, 3, 'Polynesia')
 
 print('La polynésie a une surface de {} km².'.format(summarize_column(polynesia_countries, 4)['sum']))
 
@@ -405,10 +421,10 @@ del polynesia_countries
 # ---------- Question 14 ----------
 print_state('Question 14', 'Pays en Océanie de plus de 10k km²')
 
-oceania_countries = filter_table_by_regex(table_country, 2, 'oceania')
+oceania_countries = filter_table_by_value(table_country, 2, 'Oceania')
 large_oceania_coutries = filter_table_by_comparator(oceania_countries, 8, '>', 10_000)
 
-print('En Océanie, il y a {} pays qui font plus de 10.000 km².'
+print('En Océanie, il y a {} pays qui font plus de 10 000 km².'
       .format(len(large_oceania_coutries)))
 
 del oceania_countries, large_oceania_coutries
@@ -417,7 +433,7 @@ del oceania_countries, large_oceania_coutries
 print_state('Question 15', "Langues officielles des pays de l'Europe de l'Est")
 
 est_europe_country_codes = get_unique_values_on_column(  # On récupère les codes des pays
-    filter_table_by_regex(table_country, 3, 'Eastern Europe'),  # On récupère les pays
+    filter_table_by_value(table_country, 3, 'Eastern Europe'),  # On récupère les pays
     0
 )
 
@@ -437,15 +453,15 @@ del est_europe_langs, est_europe_country_codes
 # ---------- Question 16 ----------
 print_state('Question 16', 'Population moyenne des pays d\'Asie')
 
-asia_countries = filter_table_by_regex(  # On filtre la table en ne gardant que les pays d'Asie
+asia_countries = filter_table_by_value(  # On filtre la table en ne gardant que les pays d'Asie
     table_country,
     2,
-    'asia'
+    'Asia'
 )
 
 asia_population = summarize_column(asia_countries, 6)
 
-print('En Asie, la population moyenne dans les {} pays est de {} habitants'
+print('En Asie, la population moyenne des {} pays est de {} habitants'
       .format(asia_population['count'], round(asia_population['sum'] / asia_population['count'], 1)))
 
 del asia_population
@@ -463,7 +479,7 @@ asia_cities = filter_table_by_list(  # On filtre la table en ne gardant que les 
 
 asia_cities_pop = summarize_column(asia_cities, 4)
 
-print('En Asie, la population moyenne dans les {} villes est de {} habitants'
+print('En Asie, la population moyenne des {} villes est de {} habitants'
       .format(asia_cities_pop['count'], round(asia_cities_pop['sum'] / asia_cities_pop['count'], 1)))
 
 del asia_cities, asia_country_codes, asia_cities_pop
@@ -505,7 +521,7 @@ del europe_capitales_ids, europe_countries, europe_capitales_cities
 print_state('Question 19', 'Villes d\'Afrique ou la capitale a plus de 3m habitants')
 
 africa_capitales_ids = get_unique_values_on_column(  # On récupère les identifiants des capitales
-    filter_table_by_regex(  # On récupère les pays d'Afrique
+    filter_table_by_value(  # On récupère les pays d'Afrique
         table_country,
         2,
         'Africa'
@@ -540,12 +556,12 @@ print_state('Question 20',
             'Pays d\'Amérique du Nord avec indépendance avant 1912, on parle Portugais et ou il y a plus de 49 villes')
 
 na_countries_independance_1912 = filter_table_by_comparator(  # Filtre : indépendance avant 1912
-    filter_table_by_regex(table_country, 2, 'North America'),  # Filtre : pays d'Amérique du Nord
+    filter_table_by_value(table_country, 2, 'North America'),  # Filtre : pays d'Amérique du Nord
     5, '<', 1912
 )
 
 portugese_speaking_country_codes = get_unique_values_on_column(  # On récupère les codes des pays
-    filter_table_by_regex(table_lang, 1, 'Portuguese'),  # Filtre : pays ou l'on parle portugais
+    filter_table_by_value(table_lang, 1, 'Portuguese'),  # Filtre : pays ou l'on parle portugais
     0
 )
 
@@ -580,7 +596,7 @@ more_100k_country_codes = list()
 for country_code in get_unique_values_on_column(table_city, 2):  # Pour chaque code de ville différent
     if min(  # On regarde la plus petite valeur
             # On récupère le nombre d'habitant de chaque ville d'un code de pays
-            [int(row[4]) for row in filter_table_by_list(table_city, 2, [country_code])]
+            [int(row[4]) for row in filter_table_by_value(table_city, 2, country_code)]
     ) > 100_000:
         more_100k_country_codes.append(country_code)
 
@@ -597,7 +613,7 @@ print_state('Question 22', 'Pays dont toutes les villes ont plus d\'habitants qu
 nepal_max_pop = max(  # Population de la plus grande ville au nepal
     [int(value) for value in  # Convertir chaque str en int
      get_unique_values_on_column(  # On recupère le nombre d'habitants
-         filter_table_by_list(table_city, 2, ['NPL']),  # On récupère les villes du népal
+         filter_table_by_value(table_city, 2, 'NPL'),  # On récupère les villes du népal
          4
      )]
 )
@@ -606,7 +622,7 @@ more_nepal_country_codes = list()
 for country_code in get_unique_values_on_column(table_city, 2):  # Pour chaque code de ville différent
     if min(  # On regarde la plus petite valeur
             # On récupère le nombre d'habitant de chaque ville d'un code de pays
-            [int(row[4]) for row in filter_table_by_list(table_city, 2, [country_code])]
+            [int(row[4]) for row in filter_table_by_value(table_city, 2, country_code)]
     ) > nepal_max_pop:
         more_nepal_country_codes.append(country_code)
 
@@ -621,12 +637,12 @@ del nepal_max_pop, more_nepal_country_codes
 print_state('Question 23', 'Pays ou l\'on parle français mais pas anglais')
 
 french_speaking_country_codes = set(get_unique_values_on_column(
-    filter_table_by_regex(table_lang, 1, 'French'),
+    filter_table_by_value(table_lang, 1, 'French'),
     0
 ))
 
 english_speaking_country_codes = set(get_unique_values_on_column(
-    filter_table_by_regex(table_lang, 1, 'english'),
+    filter_table_by_value(table_lang, 1, 'English'),
     0
 ))
 
@@ -634,6 +650,7 @@ display_table(
     filter_table_by_list(
         table_country,
         0,
+        # On filtre la table en ne gardant que les codes des pays qui parlent français mais pas anglais
         french_speaking_country_codes - english_speaking_country_codes
     ),
     0, 10
@@ -643,6 +660,8 @@ del french_speaking_country_codes, english_speaking_country_codes
 
 # ---------- Question 24 ----------
 print_state('Question 24', 'Pays pour lequels au moins une ville est dans la base')
+
+# TODO : Afficher les villes, pas leur nombre
 
 cities_country_codes = get_unique_values_on_column(table_city, 2)  # Codes des pays dans la base "villes.csv"
 
@@ -655,6 +674,8 @@ del cities_country_codes, countries_in_cities_table
 
 # ---------- Question 25 ----------
 print_state('Question 25', 'Pays pour lesquels aucune langue n\'est répertoriée')
+
+# TODO : Afficher les villes, pas leur nombre
 
 lang_country_codes = get_unique_values_on_column(table_lang, 0)  # Codes des pays dans la base "villes.csv"
 
@@ -671,7 +692,7 @@ print_state('Question 26', 'Pays pour lesquels la somme du nombre d\'habitants d
 filtered_28_countries_codes = list()
 for row in table_country:
     country_code = row[0]
-    cities_with_country_code = filter_table_by_list(table_city, 2, [country_code])
+    cities_with_country_code = filter_table_by_value(table_city, 2, country_code)
     if len(cities_with_country_code) > 0:
         pop_sum = summarize_column(cities_with_country_code, 4)
         if pop_sum['sum'] > 10_000_000:
@@ -724,7 +745,7 @@ del asia_countries, shortest_life_asia
 print_state('Question 28', 'La question abusée')
 
 sa_life_expectancy_sum = summarize_column(
-    filter_table_by_regex(table_country, 3, 'South America'),
+    filter_table_by_value(table_country, 3, 'South America'),
     7
 )
 
@@ -778,5 +799,3 @@ filtered_28_cities = filter_table_by_list(
 print('Il y a {} villes qui remplissent les conditions de la question 28'
       .format(len(filtered_28_cities)))
 
-# TODO : faire des optimisations pour accélérer la vitesse du programme
-#  - fonctions visées : filter_table_by_list et filter_table_by_comparator
