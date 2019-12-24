@@ -220,7 +220,12 @@ def filter_table_by_comparator(table, column_index, comparator, number):
     :param int | float number: le nombre auquel les valeurs sont comparées
     :return list[tuple]: la table filtrée
     """
-    return [row for row in table if row[column_index] != 'NULL' and eval(row[column_index] + comparator + str(number))]
+    if comparator == '<':
+        return [row for row in table if row[column_index] != 'NULL' and float(row[column_index]) < float(number)]
+    elif comparator == '>':
+        return [row for row in table if row[column_index] != 'NULL' and float(row[column_index]) > float(number)]
+    else:
+        raise ValueError('Unkonw comparator ' + comparator)
 
 
 display_table(
