@@ -674,9 +674,13 @@ print_state('Question 24', 'Pays pour lequels au moins une ville est dans la bas
 cities_country_codes = get_unique_values_on_column(table_city, 2)  # Codes des pays dans la base "villes.csv"
 
 # Pays qui ont leur code dans la variable cities_country_codes
-countries_in_cities_table = [row for row in table_country if row[0] in cities_country_codes]
+countries_in_cities_table = filter_table_by_list(
+    table_country,
+    0,
+    cities_country_codes
+)
 
-print('{} pays ont au moins une ville dans la base villes.csv'.format(len(countries_in_cities_table)))
+display_table(countries_in_cities_table, 0, 10)
 
 del cities_country_codes, countries_in_cities_table
 
@@ -690,7 +694,7 @@ lang_country_codes = get_unique_values_on_column(table_lang, 0)  # Codes des pay
 # Pays qui n'ont pas leur code dans la variable lang_country_codes
 countries_not_in_lang_table = [row for row in table_country if row[0] not in lang_country_codes]
 
-print('{} pays n\'ont aucune langue répertoriée dans la base langues.csv'.format(len(countries_not_in_lang_table)))
+display_table(countries_not_in_lang_table, 0, 10)
 
 del lang_country_codes, countries_not_in_lang_table
 
