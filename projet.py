@@ -689,30 +689,29 @@ del lang_country_codes, countries_not_in_lang_table
 # ---------- Question 26 ----------
 print_state('Question 26', 'Pays pour lesquels la somme du nombre d\'habitants de ses villes est supérieur à 10m')
 
-filtered_28_countries_codes = list()
-for row in table_country:
-    country_code = row[0]
+filtered_26_countries_codes = list()
+for country_code in get_unique_values_on_column(table_country, 0):
     cities_with_country_code = filter_table_by_value(table_city, 2, country_code)
     if len(cities_with_country_code) > 0:
         pop_sum = summarize_column(cities_with_country_code, 4)
         if pop_sum['sum'] > 10_000_000:
-            filtered_28_countries_codes.append(country_code)
+            filtered_26_countries_codes.append(country_code)
 
 display_table(
     filter_table_by_list(
         table_country,
         0,
-        filtered_28_countries_codes
+        filtered_26_countries_codes
     ),
     0, 10
 )
 
-if 'FRA' in filtered_28_countries_codes:
+if 'FRA' in filtered_26_countries_codes:
     print('La france est dans le liste')
 else:
     print('La france n\'est pas dans la liste')
 
-del filtered_28_countries_codes
+del filtered_26_countries_codes
 
 # ---------- Question 27 ----------
 print_state('Question 27', 'Le pays asiatique ayant l\'espérance de vie la plus courte')
@@ -798,4 +797,3 @@ filtered_28_cities = filter_table_by_list(
 
 print('Il y a {} villes qui remplissent les conditions de la question 28'
       .format(len(filtered_28_cities)))
-
