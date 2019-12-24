@@ -324,16 +324,26 @@ display_table(french_official_lang_countries, 0, 10)
 # ---------- Question 9 ----------
 print_state('Question 9', 'Villes d\'Afrique de moins de 100k habitants ayant pour langue officielle le français')
 
-# TODO : Villes d'Afrique, pas les pays
-
-display_table(
-    filter_table_by_value(
+africa_french_lang_official_codes = get_unique_values_on_column(
+    filter_table_by_value(  # On ne garde que les villes d'Afrique
+        # On ne garde que les villes de moins de 100k habitants
         filter_table_by_comparator(french_official_lang_countries, 6, '<', 100_000),
         2,
         'Africa'
     ),
+    0
+)
+
+display_table(
+    filter_table_by_list(  # On ne garde que les villes qui ont le code de pays trouvé ci-dessus
+        table_city,
+        2,
+        africa_french_lang_official_codes
+    ),
     0, 10
 )
+
+del africa_french_lang_official_codes
 
 # ---------- Question 10 ----------
 print_state('Question 10', 'Pays d\'Amérique du Sud de plus de 10m habitants ayant un régime républicain')
